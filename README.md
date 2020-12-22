@@ -1,5 +1,3 @@
-# sol-compile-node-js
-sol-compile-node-js
 
 1) ton-dev-cli (https://github.com/tonlabs/ton-dev-cli)
 
