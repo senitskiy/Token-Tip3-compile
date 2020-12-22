@@ -5,6 +5,8 @@ let sudo = require('sudo-js');
 
 const dotenv = require('dotenv');
 
+const dotenv = require('sudo-pass');
+
 const sudoPassword = process.env.DB_PASSWORD;
 sudo.setPassword(sudoPassword);
 
