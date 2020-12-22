@@ -3,19 +3,18 @@ const exec = require('child_process').exec;
 let sudo = require('sudo-js');
 
 
-const dotenv = require('dotenv');
+let numContract = process.argv[2]||2;
+console.log("Количество контрактов: " + numContract);
 
-const dotenv = require('sudo-pass');
 
-const sudoPassword = process.env.DB_PASSWORD;
+const dotenv = require('dotenv').config();
+// const pass = require('./pass.env');
+const sudoPassword = process.env.SUDO_PASSWORD;
 sudo.setPassword(sudoPassword);
-
-
-
 
 let options = {check: false, withResult: false};
 
-const numContract = 3;
+// const numContract = 3;
 const arrNumContract = new Array(numContract);
 
 for (let i = 0; i < numContract; i++) {
@@ -99,8 +98,11 @@ for (let i = 0; i < numContract; i++) {
 
 
 function delay(i) {
-  const command = ['tondev', 'sol', './wallet' + i, '.sol', '-l', 'js', '-L', 'deploy'];
+  const command = ['tondev', 'sol', './client' + i, '.sol', '-l', 'js', '-L', 'deploy'];
  
+  exec('cp client.sol ./client' + i + '.sol');
+  exec('mkdir client' + i);
+  exec('cp client.sol ./client' + i + '/client' + i +  '.sol');
   return new Promise(function(resolve, reject) {
     // db.values.insert(value, function(err, user) { // помните, сначала ошибка ;)
     //   if (err) {
@@ -115,7 +117,11 @@ function delay(i) {
       resolve(result);
         // console.log(result); // output '';
     })     
-  });    
+  })
+  
+  // .then (onFulfilled => {
+  //   //  exec('rm wallet.sol ./wallet' + i + '.sol');
+  // }, onRejected => {console.log("not-delete");});    
 }    // setTimeout(resolve, 2000)); 
 
 async function delayedLog(item) {
@@ -127,6 +133,9 @@ async function processArray(array) {
   for (const item of array) {
     await delayedLog(item);
   }
+
+  const TestStorage = await TestStorageDeploy();
+
   console.log('Done!');  
 }
 
@@ -252,8 +261,55 @@ processArray(arrNumContract);
 // //   setTimeout(() => exec('mv wallet' + index + '.tvc ./wallet' + index + '/wallet' + index +  '.tvc'), 5000);
 // //   //exec('> ./wallet' + index + '/' + index);
 // //   //exec('sudo tondev sol ./wallet1/wallet1.sol -l js -L deploy'
-// //   setTimeout(() => exec('mv wallet' + index + 'Contract.js ./wallet' + index + '/wallet' + index +  '.Contract.js'), 4000);
-// //   setTimeout(() => exec('mv wallet' + index + '.abi.json ./wallet' + index + '/wallet' + index +  '.abi.json'), 5100);
-// //   setTimeout(() => exec('mv wallet' + index + '.sol ./wallet' + index + '/wallet' + index +  '.sol'), 10000);
+
+
+
+
+
+for (let i = 0; i < numContract; i++) {
+  setTimeout(() => exec('mv /client' + i +  '.sol ' +  './client' + i + '/client' + i +  '.sol'), 20000);
+  setTimeout(() => exec('mv client' + i + 'Contract.js ./client' + i + '/client' + i +  '.Contract.js'), 20000);
+  setTimeout(() => exec('mv client' + i + '.abi.json ./client' + i + '/client' + i +  '.abi.json'), 20000);
+  setTimeout(() => exec('mv client' + i + '.sol ./client' + i + '/client' + i +  '.sol'), 20000);
+  setTimeout(() => exec('mv client' + i + '.tvc ./client' + i + '/client' + i +  '.tvc'), 20000);
+}
+
+
+
+
+
+
+  // setTimeout(() => exec('mv wallet' + index + 'Contract.js ./wallet' + index + '/wallet' + index +  '.Contract.js'), 7000);
+  // setTimeout(() => exec('mv wallet' + index + '.abi.json ./wallet' + index + '/wallet' + index +  '.abi.json'), 5000);
+  // setTimeout(() => exec('mv wallet' + index + '.sol ./wallet' + index + '/wallet' + index +  '.sol'), 5000);
  
-// }
+
+
+  function TestStorageDeploy() {
+    const command = ['tondev', 'sol', './TestStorage', '.sol', '-l', 'js', '-L', 'deploy'];
+   
+    return new Promise(function(resolve, reject) {
+      // db.values.insert(value, function(err, user) { // помните, сначала ошибка ;)
+      //   if (err) {
+      //     return reject(err); // не забудьте return
+      //   }
+      //   resolve(user);
+      // })      
+      sudo.exec(command, options, function(err, pid, result) {
+        if (err) {
+          return reject(err); // не забудьте return
+        }
+        resolve(result);
+        console.log(result); // output '';
+      })     
+    })
+    
+    // .then (onFulfilled => {
+    //   //  exec('rm wallet.sol ./wallet' + i + '.sol');
+    // }, onRejected => {console.log("not-delete");});    
+  } 
+
+  // TestStorageDeploy();
+
+//   // tondev sol TestStorage.sol -l js -L deploy 
+// // }
