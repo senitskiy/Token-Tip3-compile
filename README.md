@@ -7,14 +7,14 @@ Dependencies
 
 Install
 
-1) $ npm install -g ton-dev-cli
+$ npm install -g ton-dev-cli
 
-2) $ git clone https://github.com/radianceteam/sc-test-framework
+$ git clone https://github.com/radianceteam/sc-test-framework
 
-3) $ npm install
+$ npm install
 
 Config & Run
 
-1) $ sudo password enter in .env
+$ sudo password enter in file .env
 
-2) $ node script.js [number_contract]
+$ node script.js [number_contract]
