@@ -15,6 +15,6 @@ $ npm install
 
 Config & Run
 
-$ sudo password enter in file .env
+$ create file '.env' from 'templateFor.env' and in sudo password enter
 
-$ node script.js [number_contract max 10]
+$ node script.js [number_contract max 10, defaul 2]
