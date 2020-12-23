@@ -5,311 +5,174 @@ let sudo = require('sudo-js');
 
 let numContract = process.argv[2]||2;
 console.log("Количество контрактов: " + numContract);
-
+const { TONClient } = require('ton-client-node-js');
 
 const dotenv = require('dotenv').config();
-// const pass = require('./pass.env');
+
 const sudoPassword = process.env.SUDO_PASSWORD;
 sudo.setPassword(sudoPassword);
 
 let options = {check: false, withResult: false};
 
-// const numContract = 3;
 const arrNumContract = new Array(numContract);
 
 for (let i = 0; i < numContract; i++) {
   arrNumContract[i] = i;
-  // arrNumContract.push(i);
 }
-
-
-
-
-// var command = ['tondev', 'sol', './wallet', i, '.sol', '-l', 'js', '-L', 'deploy'];
-// sudo.exec(command, options, function(err, pid, result) {
-//     console.log(result); // output '';
-// });
-
-// const funExec1 = (str) => {
-//   return new Promise(function(resolve, reject) {
-
-//     exec(str);  
-
-//   });
-// };
-
-// const funExec = (str) => {   
-//   return new Promise(function(resolve, reject) {    
-//     exec(str, (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-//         return Promise.reject(error);;
-//       }
-//       console.log(`stdout: ${stdout}`);
-//       console.log(`stderr: ${stderr}`);
-//     })
-//   })
-// }
-
-
-
-
-
-// async function f1(i) {
-//   // const s1 = 'mkdir wallet' + i;
-//   // const s2 = 'cp wallet.sol ./wallet' + i + '.sol';
-//   // const s3 = 'sudo tondev sol ./wallet' + i + '.sol -l js -L deploy';
-//   const command = ['tondev', 'sol', './wallet' + i, '.sol', '-l', 'js', '-L', 'deploy'];
-
-//   // const f1 = await funExec(s1);
-
-
-//   // try {
-//     // const f2 = await funExec(s2);
-//     const f3 = await sudo.exec(command, options, function(err, pid, result) {
-//       console.log(result); // output '';
-//     });
-//   // } catch(err) {
-//   //   // перехватит любую ошибку в блоке try: и в fetch, и в response.json
-//   //   console.log(err);
-//   // }
-
-//   // const f2 = await funExec(s2);
-//   // // const f3 = funExec(s3);
-
-//   // const f3 = await sudo.exec(command, options, function(err, pid, result) {
-//   //   console.log(result); // output '';
-//   // });
-
-//   // const a2 = funExec('cp wallet.sol ./wallet' + i + '.sol');
-//   // const a3 = funExec('sudo tondev sol ./wallet' + i + '.sol -l js -L deploy');
-//   // const a4 = funExec('mv wallet' + i + '.tvc ./wallet' + i + '/wallet' + i +  '.tvc');
-//   // const a5 = funExec('mv wallet' + i + 'Contract.js ./wallet' + i + '/wallet' + i +  '.Contract.js');
-//   // const a6 = funExec('mv wallet' + i + '.abi.json ./wallet' + i + '/wallet' + i +  '.abi.json');
-//   // const a7 = funExec('mv wallet' + i + '.sol ./wallet' + i + '/wallet' + i +  '.sol');
-// };
-
-// async function processArray(array) {
-//   const promises = array.map(f1);
-//   await Promise.all(promises);
-//   console.log('Done!');
-// }
-
-
-
-function delay(i) {
+function clientCompileContract(i) {
   const command = ['tondev', 'sol', './client' + i, '.sol', '-l', 'js', '-L', 'deploy'];
  
   exec('cp client.sol ./client' + i + '.sol');
   exec('mkdir client' + i);
   exec('cp client.sol ./client' + i + '/client' + i +  '.sol');
-  return new Promise(function(resolve, reject) {
-    // db.values.insert(value, function(err, user) { // помните, сначала ошибка ;)
-    //   if (err) {
-    //     return reject(err); // не забудьте return
-    //   }
-    //   resolve(user);
-    // })      
+  return new Promise(function(resolve, reject) {     
     sudo.exec(command, options, function(err, pid, result) {
       if (err) {
-        return reject(err); // не забудьте return
+        return reject(err);  
       }
       resolve(result);
-        // console.log(result); // output '';
+        // console.log(result); 
     })     
-  })
-  
-  // .then (onFulfilled => {
-  //   //  exec('rm wallet.sol ./wallet' + i + '.sol');
-  // }, onRejected => {console.log("not-delete");});    
-}    // setTimeout(resolve, 2000)); 
+  })  
+}; 
 
-async function delayedLog(item) {
-  const result = await delay(item);
+function TestStorageDeploy() {
+  const command = ['tondev', 'sol', './TestStorage', '.sol', '-l', 'js', '-L', 'deploy'];
+ 
+  return new Promise(function(resolve, reject) {    
+    sudo.exec(command, options, function(err, pid, result) {
+      if (err) {
+        return reject(err); 
+      }
+      resolve(result);
+      console.log(result); 
+    })     
+  })  
+};
+
+async function createdLog(item) {
+  const result = await clientCompileContract(item);
   console.log(result);
 }
 
-async function processArray(array) {
+//////////////////////////////////////////////////////////////////
+///////////////// get Contract Address Client   //////////////////
+//////////////////////////////////////////////////////////////////
+async function getContractAddressClient(client, i) {
+  
+  let contractString  = '';
+  let pathJsonString  = '';
+
+  if (i != 999999) {
+    contractString = './client' + i + '/client' + i + '.Contract.js';
+    pathJsonString = './client' + i + '/client' + i + 'Contract.json';
+  }
+  else {
+    contractString = './TestStorage/TestStorageContract.js'; //specify the path to the .js file
+    pathJsonString = './TestStorage/TestStorageContract.json'; 
+  }
+
+  const contract = require(contractString); //specify the path to the .js file
+  const contractPackage = contract.package;
+  const abi = contract.package.abi;
+  const fs = require('fs');
+  const pathJson = pathJsonString;   
+
+  // Generating public and secret key pairs
+  let contractKeys = await client.crypto.ed25519Keypair();
+
+  // Receiving future contract address
+  const futureAddress = (await client.contracts.createDeployMessage({
+    package: contractPackage,
+    constructorParams: {},
+    keyPair: contractKeys,
+  })).address;
+
+  console.log(`Future address of the contract will be: ${futureAddress}`);
+  console.log(contractKeys);
+  let contractJson = JSON.stringify({address:futureAddress, keys:contractKeys});
+  try {
+    fs.writeFileSync( pathJson, contractJson,{flag:'a+'});   //'a+' is append mode
+    console.log("Future address of the contract  and keys written successfully");
+  } catch(err) {
+    console.error(err);
+  }
+};
+
+async function getContractAddressCurrentClient (i) {
+  try {
+    const client = await TONClient.create({
+      servers: ['net.ton.dev'],
+    });
+    await getContractAddressClient(client, i);
+    console.log('TON create future address of contract and generate keys for client:' + i + '\n');
+    // process.exit(0);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+// async function getContractAddressForAllClient(array) {
+//   for (const item of array) {
+//     await getContractAddressCurrentClient(item);
+//   }
+// };
+
+
+//////////////////////////////////////////////////////////////////
+///////////////// deploy Contract Client   //////////////////
+//////////////////////////////////////////////////////////////////
+
+
+
+
+
+//////////////////////////////////////////////////////////////////
+//////////////////////// RUN /////////////////////////////////////
+//////////////////////////////////////////////////////////////////
+
+async function clientCompiledArray(array) {
   for (const item of array) {
-    await delayedLog(item);
+    await createdLog(item);
   }
 
   const TestStorage = await TestStorageDeploy();
+  if (TestStorage) {
+    exec('mkdir TestStorage');
+    exec('cp TestStorage.sol ./TestStorage/TestStorage.sol');
+    exec('mv TestStorageContract.js ./TestStorage/TestStorageContract.js');
+    exec('mv TestStorage.abi.json ./TestStorage/TestStorage.abi.json');
+    exec('mv TestStorage.tvc ./TestStorage/TestStorage.tvc');
+  }
 
+  for (let i = 0; i < numContract; i++) {
+    // exec('mv /client' + i +  '.sol ' +  './client' + i + '/client' + i +  '.sol');
+    exec('mv client' + i + 'Contract.js ./client' + i + '/client' + i +  '.Contract.js');
+    exec('mv client' + i + '.abi.json ./client' + i + '/client' + i +  '.abi.json');
+    exec('mv client' + i + '.sol ./client' + i + '/client' + i +  '.sol');
+    exec('mv client' + i + '.tvc ./client' + i + '/client' + i +  '.tvc');
+  }
+
+  for (const item of array) {
+    await getContractAddressCurrentClient(item);
+  }
+  // const res = await getContractAddressForAllClient(array);
+  await getContractAddressCurrentClient (999999);
   console.log('Done!');  
 }
 
-processArray(arrNumContract);
+//////////////////////////////////////
+clientCompiledArray(arrNumContract);
 
-// async function processArray(array) {
-//   const promises = array.map(delayedLog);
-//   await Promise.all(promises);
-//   console.log('Done!');
-// }
+//////////////////////////////////////////////////////////////////////////////////////////
 
-
- // 2, 3, 4, 5]); 
-
-
-
-// async function processArray(array) {
-//   for (const item of array) {
-//     await f1(item);
-//   }
-//   console.log('Done!');
-// }
+// const contract = require('./client' + i + '/client' + i + 'Contract.js'); //specify the path to the .js file
+// const contractPackage = contract.package;
+// const abi = contract.package.abi;
+// const fs = require('fs');
+// const pathJson = './client' + i + '/client' + i + 'Contract.json';
 
 
 
 
-
-
-// for (let i = 0; i < 3; i++) {
-//   f1(i);
-// }
-
-
-
-// function delay() {
-//   return new Promise(resolve => setTimeout(resolve, 300));
-// }
-  
-// async function delayedLog(item) {
-//   await delay();
-//   console.log(item);
-// }
-
-// async function processArray(array) {
-//   for (const item of array)  {
-//     await f1(item);
-//   }
-//   console.log('Done!');
-// }
-
- 
-
-
-
-
-// exec('mkdir wallet'+i);
-// .then(function(result) {
-
-//   exec('cp wallet.sol ./wallet' + i + '.sol');
-//   return 1;
-
-// });
-
-
-
-
-// const funcExec = (str,i) => {   
-//   return new Promise(function(resolve, reject) {    
-//     exec(str+i, (error, stdout, stderr) => {
-//       if (error) {
-//         console.error(`exec error: ${error}`);
-//         return;
-//       }
-//       console.log(`stdout: ${stdout}`);
-//       console.log(`stderr: ${stderr}`);
-//     })
-//   })
-// }
-  // .then((result) => {exec('cp wallet.sol ./wallet' + i + '.sol', (error, stdout, stderr) => {
-  //   if (error) {
-  //     console.error(`exec error: ${error}`);
-  //     return;
-  //   }
-  //   console.log(`stdout: ${stdout}`);
-  //   console.log(`stderr: ${stderr}`);
-  //   })
-  // })
-
-
-
-// };
-
-// const asyncFuncExec = async (i) => {
-//   let res = await funcExec(i);
-//   return res;
-// };
-
-// for (let i = 0; i < 3; i++) {
-  
-//   f1(i);
-
-//   // asyncFuncExec(i)
-//   //   .then((resolve) => {
-//   //       console.log("resolve:" + resolve);
-//   //       },
-//   //       (reject) => {
-//   //       console.log("reject:" + reject);
-//   //       })
-//   //   .then()
-//   //       ;
-
-//   // exec('cp wallet.sol ./wallet' + index + '.sol');
-
-//   //  exec('mkdir wallet' + index);
-//   //exec('cp wallet.sol ./wallet' + index + '/wallet' + index +  '.sol');
-//   // exec('cp wallet.sol ./wallet' + index + '.sol');
-//   //exec('cd wallet' + index);
-//   // 
-// //   exec('sudo tondev sol wallet' + index + '.sol -l js -L deploy'); 
-// //   //exec('sudo tondev sol ./wallet' + index + '/wallet' + index + '.sol -l js -L deploy'); 
-// //   //sudo tondev sol ./wallet' + index + '/wallet' + index + '.sol -l js -L deploy
-
-// //   setTimeout(() => exec('mv wallet' + index + '.tvc ./wallet' + index + '/wallet' + index +  '.tvc'), 5000);
-// //   //exec('> ./wallet' + index + '/' + index);
-// //   //exec('sudo tondev sol ./wallet1/wallet1.sol -l js -L deploy'
-
-
-
-
-
-for (let i = 0; i < numContract; i++) {
-  setTimeout(() => exec('mv /client' + i +  '.sol ' +  './client' + i + '/client' + i +  '.sol'), 20000);
-  setTimeout(() => exec('mv client' + i + 'Contract.js ./client' + i + '/client' + i +  '.Contract.js'), 20000);
-  setTimeout(() => exec('mv client' + i + '.abi.json ./client' + i + '/client' + i +  '.abi.json'), 20000);
-  setTimeout(() => exec('mv client' + i + '.sol ./client' + i + '/client' + i +  '.sol'), 20000);
-  setTimeout(() => exec('mv client' + i + '.tvc ./client' + i + '/client' + i +  '.tvc'), 20000);
-}
-
-
-
-
-
-
-  // setTimeout(() => exec('mv wallet' + index + 'Contract.js ./wallet' + index + '/wallet' + index +  '.Contract.js'), 7000);
-  // setTimeout(() => exec('mv wallet' + index + '.abi.json ./wallet' + index + '/wallet' + index +  '.abi.json'), 5000);
-  // setTimeout(() => exec('mv wallet' + index + '.sol ./wallet' + index + '/wallet' + index +  '.sol'), 5000);
- 
-
-
-  function TestStorageDeploy() {
-    const command = ['tondev', 'sol', './TestStorage', '.sol', '-l', 'js', '-L', 'deploy'];
-   
-    return new Promise(function(resolve, reject) {
-      // db.values.insert(value, function(err, user) { // помните, сначала ошибка ;)
-      //   if (err) {
-      //     return reject(err); // не забудьте return
-      //   }
-      //   resolve(user);
-      // })      
-      sudo.exec(command, options, function(err, pid, result) {
-        if (err) {
-          return reject(err); // не забудьте return
-        }
-        resolve(result);
-        console.log(result); // output '';
-      })     
-    })
-    
-    // .then (onFulfilled => {
-    //   //  exec('rm wallet.sol ./wallet' + i + '.sol');
-    // }, onRejected => {console.log("not-delete");});    
-  } 
-
-  // TestStorageDeploy();
-
-//   // tondev sol TestStorage.sol -l js -L deploy 
-// // }
+// getContractAddressForAllClient(arrNumContract);
