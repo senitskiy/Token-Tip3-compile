@@ -17,4 +17,4 @@ Config & Run
 
 $ sudo password enter in file .env
 
-$ node script.js [number_contract]
+$ node script.js [number_contract max 10]
