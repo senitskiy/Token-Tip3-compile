@@ -1,9 +1,9 @@
 const { TONClient } = require('ton-client-node-js');
-const contract = require('./giver/client0.Contract.js'); //specify the path to the .js file
+const contract = require('./WalletContract.js'); //specify the path to the .js file   ./giver/giver.js
 const contractPackage = contract.package;
 const abi = contract.package.abi;
 const fs = require('fs');
-const pathJson = './client0/client0Contract.json';
+const pathJson = './WalletContract.json';  //'./giver/giver.json'
 
 async function main(client) {
   // Read contract data
@@ -27,7 +27,7 @@ async function main(client) {
 (async () => {
   try {
     const client = await TONClient.create({
-      servers: ['frhb52973ds.ikexpress.com'],
+      servers: ['http://localhost'], //frhb52973ds.ikexpress.com  'net.ton.dev'
     });
     await main(client);
     console.log('TON main done');

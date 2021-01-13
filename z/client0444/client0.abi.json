@@ -1,0 +1,226 @@
+{
+	"ABI version": 2,
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addRole",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleNameHex","type":"bytes"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addRoleMember",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"},
+				{"name":"member","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "closeAccess",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"},
+				{"name":"member","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole1",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole2",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole3",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole4",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole5",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole6",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole7",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole8",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole9",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "setRole10",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"roleId","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeApples",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeOranges",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeCoconuts",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeMangoes",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeBananas",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeGrapes",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeKiwis",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeTangerines",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storeAvocadas",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "storePapayas",
+			"inputs": [
+				{"name":"storageAddress","type":"address"},
+				{"name":"value","type":"uint256"}
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	]
+}

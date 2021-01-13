@@ -1,0 +1,26 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../sc-acl"
+		},
+		{
+			"path": "../sol-compile-node-js fld.ton.dev"
+		}
+	],
+	"settings": {
+		"git.ignoreLimitWarning": true
+	},
+	"launch": {
+		"configurations": [
+			{
+				"type": "pwa-chrome",
+				"name": "http://ton-client-node-js",
+				"request": "launch",
+				"url": "http://ton-client-node-js"
+			}
+		]
+	}
+}
