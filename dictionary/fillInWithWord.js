@@ -192,6 +192,9 @@ function copyByStream(src, dest) {
 // clientTemplateSol.appendFile('clientTemplate.sol', "Привет МИД!", function(error){
 //    if(error) throw error; });
     async function clientSolFunc  () {
+
+    let string1 = '';
+
     for (let i= 0; i < numContract; i++) {
     
     // fs.appendFile('clientTemplate.sol', "Привет МИД!", function(error){
@@ -226,12 +229,13 @@ function copyByStream(src, dest) {
         storageAddress.store${Words}(value);
     }
     ////////////////////////////////////////\n`;
-        fs.appendFile('client.sol', string1, function(error){
-            if(error) throw error; }); 
+        // fs.appendFile('client.sol', string1, function(error){
+        //     if(error) throw error; }); 
 
     };
 
-     fs.appendFile('client.sol', '}', function(error){
+    string1 += '}';
+     fs.appendFile('client.sol', string1, function(error){
         if(error) throw error; }); 
   
     };
@@ -239,7 +243,7 @@ function copyByStream(src, dest) {
    
     async function interfacesSolFunc  () {
 
-        string1 =
+        let string1 =
         `        
         pragma solidity >= 0.6.0;
 
@@ -258,8 +262,8 @@ function copyByStream(src, dest) {
 
         \n`;
 
-        fs.appendFile('Interfaces.sol', string1, function(error){
-            if(error) throw error;         
+        // fs.appendFile('Interfaces.sol', string1, function(error){
+        //     if(error) throw error;         
 
 
             for (let i= 0; i < numContract; i++) {
@@ -270,7 +274,7 @@ function copyByStream(src, dest) {
 
                 console.log( i + ": " + dictionaryWord[i] + " :" + Word + ": " + dictionaryWord[i] + "s: "   ); 
 
-                string1 =
+                string1 +=
             `
 ///////// ${Words} ////////////
 interface Store${Words}  {
@@ -282,10 +286,13 @@ interface Role${Words}  {
 }
 
 ////////////////////////////////////////\n`;
-                fs.appendFile('Interfaces.sol', string1, function(error){
-                    if(error) throw error; }); 
+
             };
-        })     
+
+            fs.appendFile('Interfaces.sol', string1, function(error){
+                if(error) throw error; }); 
+
+        // })     
         };
     
 
@@ -403,8 +410,8 @@ interface Role${Words}  {
     }
 
     ////////////////////////////////////////\n`;
-                    fs.appendFile('TestStorage.sol', string1, function(error){
-                        if(error) throw error; }); 
+                    // fs.appendFile('TestStorage.sol', string1, function(error){
+                    //     if(error) throw error; }); 
                 };
 
 

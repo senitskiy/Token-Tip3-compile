@@ -7,7 +7,7 @@
 			"path": "../sc-acl"
 		},
 		{
-			"path": "../sol-compile-node-js fld.ton.dev"
+			"path": "../sol-compile-node-js-fld"
 		}
 	],
 	"settings": {
