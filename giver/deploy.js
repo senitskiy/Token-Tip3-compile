@@ -1,9 +1,9 @@
 const { TONClient } = require('ton-client-node-js');
-const contract = require('./client999999/client999999.Contract.js'); //specify the path to the .js file   ./giver/giver.js
+const contract = require('./giverContract.js'); //specify the path to the .js file   ./giver/giver.js
 const contractPackage = contract.package;
 const abi = contract.package.abi;
 const fs = require('fs');
-const pathJson = './client999999/client999999Contract.json';  //'./giver/giver.json'
+const pathJson = './giverContract.json';  //'./giver/giver.json'
 
 async function main(client) {
   // Read contract data
@@ -27,11 +27,11 @@ async function main(client) {
     // console.log(`Run fees are  ${JSON.stringify(result.fees, null, 2)}`);
 
     // gasFee += parseInt(result.fees.gasFee, 16);
-    const gasFee = parseInt(deployAddress.transaction.total_fees, 16);
-    // const gasFee = parseInt(result.fees.gasFee, 16);
-    gasFeeALL += gasFee;
-    console.log('gasFeeALL: ' + gasFeeALL + "; gasFee: " + gasFee);
-    console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee: " + gasFee/1000000000);
+    // const gasFee = parseInt(deployAddress.transaction.total_fees, 16);
+    // // const gasFee = parseInt(result.fees.gasFee, 16);
+    // gasFeeALL += gasFee;
+    // console.log('gasFeeALL: ' + gasFeeALL + "; gasFee: " + gasFee);
+    // console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee: " + gasFee/1000000000);
 
   }catch(err){
     console.log(err);
@@ -41,7 +41,7 @@ async function main(client) {
 (async () => {
   try {
     const client = await TONClient.create({
-      servers: ['gql.custler.net'], //frhb52973ds.ikexpress.com  'net.ton.dev'
+      servers: ['net.ton.dev'], //frhb52973ds.ikexpress.com  'net.ton.dev' gql.custler.net
     });
     await main(client);
     console.log('TON main done');

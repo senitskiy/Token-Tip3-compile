@@ -38,105 +38,13 @@ contract StorageClient {
 		storageAddress.closeAccess(roleId, member);
 	}
 
-	function setRole1(RoleApples storageAddress, uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole1(roleId);
-	}
+    ///////// Geometrids ////////////
+    function setRole1(RoleGeometrids storageAddress, uint256 roleId) public view checkOwnerAndAccept {
+    storageAddress.setRole1(roleId);
+    }
 
-	function setRole2(RoleOranges storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole2(roleId);
-	}
-
-	function setRole3(RoleCoconuts storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole3(roleId);
-	}
-
-	function setRole4(RoleMangoes storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole4(roleId);
-	}
-
-	function setRole5(RoleBananas storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole5(roleId);
-	}
-
-	function setRole6(RoleGrapes storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole6(roleId);
-	}
-
-	function setRole7(RoleKiwis storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole7(roleId);
-	}
-
-	function setRole8(RoleTangerines storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole8(roleId);
-	}
-
-	function setRole9(RoleAvocadas storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole9(roleId);
-	}
-
-	function setRole10(RolePapayas storageAddress,uint256 roleId) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.setRole10(roleId);
-	}					
-						
-
-	function storeApples(StoreApples storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeApples(value);
-	}
-
-	function storeOranges(StoreOranges storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeOranges(value);
-	}
-
-	function storeCoconuts(StoreCoconuts storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeCoconuts(value);
-	}
-
-	function storeMangoes(StoreMangoes storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeMangoes(value);
-	}
-
-	function storeBananas(StoreBananas storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeBananas(value);
-	}
-
-	function storeGrapes(StoreGrapes storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeGrapes(value);
-	}
-
-	function storeKiwis(StoreKiwis storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeKiwis(value);
-	}
-
-	function storeTangerines(StoreTangerines storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeTangerines(value);
-	}
-
-	function storeAvocadas(StoreAvocadas storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storeAvocadas(value);
-	}			
-
-	function storePapayas(StorePapayas storageAddress, uint value) public view checkOwnerAndAccept {
-		// Call the remote contract function with parameter.
-		storageAddress.storePapayas(value);
-	}
-
+    function storeGeometrids(StoreGeometrids storageAddress, uint value) public view checkOwnerAndAccept {
+        storageAddress.storeGeometrids(value);
+    }
+    ////////////////////////////////////////
 }

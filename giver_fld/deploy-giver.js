@@ -27,7 +27,7 @@ async function main(client) {
 (async () => {
   try {
     const client = await TONClient.create({
-      servers: ['net.ton.dev'], //frhb52973ds.ikexpress.com  'net.ton.dev'
+      servers: ['gql.custler.net'], //frhb52973ds.ikexpress.com  'net.ton.dev'
     });
     await main(client);
     console.log('TON main done');

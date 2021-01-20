@@ -37,7 +37,7 @@ uint geometrids;
         emitss = num;
     }   
 
-    function getEmitss() public view alwaysAccept returns (uint current_apples) {
+    function getEmitss() public view alwaysAccept returns (uint current_emitss) {
         current_emitss = emitss;
     }
 
@@ -52,7 +52,7 @@ uint geometrids;
         geometrids = num;
     }   
 
-    function getGeometrids() public view alwaysAccept returns (uint current_apples) {
+    function getGeometrids() public view alwaysAccept returns (uint current_geometrids) {
         current_geometrids = geometrids;
     }
 

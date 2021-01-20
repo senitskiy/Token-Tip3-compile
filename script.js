@@ -3,9 +3,14 @@ const exec = require('child_process').exec;
 let sudo = require('sudo-js');
 
 let numContract = process.argv[2]||2;
+let numMembers   = process.argv[3]||2;
+
 console.log("Количество контрактов: " + numContract);
+console.log("Количество мемберов для контракта: " + numMembers);
 const { TONClient } = require('ton-client-node-js');
 const fs = require('fs');
+
+const SERVERS = 'net.ton.dev'; //['gql.custler.net'], //frhb52973ds.ikexpress.com  http://localhost'
 
 const dotenv = require('dotenv').config();
 
@@ -18,9 +23,13 @@ const arrNumContract = new Array(numContract);
 
 let gasFeeALL = 0;
 
+let num = 0;
 
 for (let i = 0; i < numContract; i++) {
-  arrNumContract[i] = i;
+  for (let j = 0; j < numMembers; j++) {      
+    arrNumContract[num] = i + "_" + j;
+    num++;
+  }  
 };
 
 arrNumContract.push(999999);
@@ -105,12 +114,13 @@ async function getContractAddressClient(client, i) {
     keyPair: contractKeys,
   })).address;
 
+  console.log('TON create for client:' + i);
   console.log(`Future address of the contract will be: ${futureAddress}`);
   console.log(contractKeys);
   let contractJson = JSON.stringify({address:futureAddress, keys:contractKeys});
   try {
     fs.writeFileSync( pathJson, contractJson,{flag:'a+'});   //'a+' is append mode
-    console.log("Future address of the contract  and keys written successfully");
+    console.log("Future address of the contract  and keys written successfully \n");
   } catch(err) {
     console.error(err);
   }
@@ -119,10 +129,10 @@ async function getContractAddressClient(client, i) {
 async function getContractAddressCurrentClient (i) {
   try {
     const client = await TONClient.create({
-      servers: ['gql.custler.net'], //frhb52973ds.ikexpress.com 'net.ton.dev' http://localhost'
+      servers: [SERVERS], //frhb52973ds.ikexpress.com 'net.ton.dev' http://localhost'
     });
     await getContractAddressClient(client, i);
-    console.log('TON create future address of contract and generate keys for client:' + i + '\n');
+    // console.log('TON create future address of contract and generate keys for client:' + i + '\n');
     // process.exit(0);
   } catch (error) {
     console.error(error);
@@ -157,7 +167,7 @@ async function getContractAddressCurrentClient (i) {
     const contractAddressClient = contractDataClient.address;
   
     let dest =  contractAddressClient; 
-    let value = 50000000; //31986001; 30985998 32986001  40000000
+    let value = 1000000000; //31986001; 30985998 32986001  40000000
     let bounce = false;
     console.log(contractAddressClient);      
     
@@ -182,10 +192,11 @@ async function getContractAddressCurrentClient (i) {
         })
         const messageProcessingState = await client.contracts.sendMessage(runMessage.message);
         const result = await client.contracts.waitForRunTransaction(runMessage, messageProcessingState);
-        console.log(`Tokens were sent. Transaction id is ${result.transaction.id}`);
+        console.log(`Tokens were sent. client${i} Transaction id is ${result.transaction.id}`);
         console.log(`Run fees are  ${JSON.stringify(result.fees, null, 2)}`);
         
-        const gasFee = parseInt(result.fees.gasFee, 16);
+        const gasFee = parseInt(result.transaction.total_fees, 16);
+        // const gasFee = parseInt(result.fees.gasFee, 16);
         gasFeeALL += gasFee;
         console.log('gasFeeALL: ' + gasFeeALL + "; gasFee: " + gasFee);
         console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee: " + gasFee/1000000000);
@@ -201,7 +212,7 @@ async function getContractAddressCurrentClient (i) {
   async function sendTransactionAll (arrNumContract) {
     try {
       const client = await TONClient.create({
-        servers: ['gql.custler.net'], //frhb52973ds.ikexpress.com 'net.ton.dev'
+        servers: [SERVERS], //frhb52973ds.ikexpress.com 'net.ton.dev'
       });
             
       // let numContract = 2;
@@ -217,7 +228,7 @@ async function getContractAddressCurrentClient (i) {
           //  await  sendTransaction(item);
 
            await mainSendTransaction(client, item);
-           console.log('TON done main');
+           console.log('TON done main \n');
 
       // console.log(item);
       }
@@ -297,7 +308,7 @@ do {
       constructorParams: {},
       keyPair: contractKeys,
     });
-    console.log(`Contract was deployed at address: ${deployAddress.address}`);
+    console.log(`Contract for client${i} was deployed at address: ${deployAddress.address}`);
 
     // const messageProcessingState = await client.contracts.sendMessage(deployAddress.message);
     // const result = await client.contracts.waitForRunTransaction(deployAddress, messageProcessingState);
@@ -305,11 +316,11 @@ do {
     // console.log(`Run fees are  ${JSON.stringify(result.fees, null, 2)}`);
 
     // gasFee += parseInt(result.fees.gasFee, 16);
-
+    const gasFee = parseInt(deployAddress.transaction.total_fees, 16);
     // const gasFee = parseInt(result.fees.gasFee, 16);
-    // gasFeeALL += gasFee;
-    // console.log('gasFeeALL: ' + gasFeeALL + "; gasFee: " + gasFee);
-    // console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee: " + gasFee/1000000000);
+    gasFeeALL += gasFee;
+    console.log('gasFeeALL: ' + gasFeeALL + "; gasFee: " + gasFee);
+    console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee: " + gasFee/1000000000);
 
     // const messageProcessingState = await client.contracts.sendMessage(deployAddress.message);
     // const result = await client.contracts.waitForRunTransaction(deployAddress, );
@@ -336,7 +347,7 @@ async function deployAll (arrNumContract) {
 
 try {
   const client = await TONClient.create({
-    servers: ['gql.custler.net'], //frhb52973ds.ikexpress.com  'net.ton.dev'
+    servers: [SERVERS], //frhb52973ds.ikexpress.com  'net.ton.dev'
   });
 
   // let numContract = 2;
@@ -350,7 +361,7 @@ try {
     //  setTimeout( 
       //  await  sendTransaction(item);
        await mainDeploy (client, item);
-       console.log('TON client deploy!');
+       console.log('TON client deploy! \n');
 
     // console.log(item);
   }
@@ -385,11 +396,13 @@ async function clientCompiledArray(array) {
 
 
   for (let i = 0; i < numContract; i++) {
-    // exec('mv /client' + i +  '.sol ' +  './client' + i + '/client' + i +  '.sol');
-    exec('mv client' + i + 'Contract.js ./client' + i + '/client' + i +  '.Contract.js');
-    exec('mv client' + i + '.abi.json ./client' + i + '/client' + i +  '.abi.json');
-    exec('mv client' + i + '.sol ./client' + i + '/client' + i +  '.sol');
-    exec('mv client' + i + '.tvc ./client' + i + '/client' + i +  '.tvc');
+    for (let j = 0; j < numMembers; j++) { 
+      const k = i + "_" + j;     
+      exec('mv client' + k + 'Contract.js ./client' + k + '/client' + k + '.Contract.js');
+      exec('mv client' + k + '.abi.json ./client' + k + '/client' + k + '.abi.json');
+      exec('mv client' + k + '.sol ./client' + k + '/client' + k + '.sol');
+      exec('mv client' + k + '.tvc ./client' + k + '/client' + k + '.tvc');
+    }  
   }
 
   exec('mv client999999Contract.js ./client999999/client999999.Contract.js');

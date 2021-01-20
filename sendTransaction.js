@@ -5,8 +5,8 @@ const abi = contract.package.abi;
 const fs = require('fs');
 const pathJson = './giver/giver.json';
 
-let dest = '0:cc790135a935d369aa8f99a72290bbd0280cb968618fa7c9e7e78b373ea69c9e'; 
-let value = 40000000; //31986001; 30985998 32986001
+let dest = '0:6c3ef9a29bf8a195c6936a038d516a2ab72bbccf65091da2d45ab757e34edddb'; 
+let value = 1000000000; //31986001; 30985998 32986001
 let bounce = false;
 
 
