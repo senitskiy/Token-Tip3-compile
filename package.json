@@ -1,0 +1,31 @@
+{
+  "name": "sol-compile-node",
+  "version": "1.0.0",
+  "description": "Dependencies",
+  "main": "script.js",
+  "dependencies": {
+    "@octokit/core": "^3.2.4",
+    "@octokit/plugin-request-log": "^1.0.2",
+    "@tonclient/core": "^1.5.2",
+    "@tonclient/lib-node": "^1.5.2",
+    "ascii-hex": "^1.0.1",
+    "dotenv": "^8.2.0",
+    "node-inspect": "^2.0.0",
+    "sudo-js": "^1.0.2",
+    "ton-client-node-js": "^0.28.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/senitskiy/sol-compile-node-js.git"
+  },
+  "author": "Senitskiy Dmitry",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/senitskiy/sol-compile-node-js/issues"
+  },
+  "homepage": "https://github.com/senitskiy/sol-compile-node-js#readme"
+}

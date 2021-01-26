@@ -14,7 +14,13 @@ const SERVERS = 'net.ton.dev'; //['gql.custler.net'], //frhb52973ds.ikexpress.co
 
 const dotenv = require('dotenv').config();
 
-const sudoPassword = process.env.SUDO_PASSWORD;
+const sudoPassword      = process.env.SUDO_PASSWORD;
+const giverGiverAdress  = process.env.GIVER_ADRESS;
+const giverSecretKey    = process.env.GIVER_SECREAT_KEY;
+const giverPublicKey    = process.env.GIVER_PUBLIC_KEY;
+
+
+
 sudo.setPassword(sudoPassword);
 
 let options = {check: false, withResult: false};

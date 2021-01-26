@@ -1,15 +1,21 @@
-const { TONClient } = require('ton-client-node-js');
+const {TonClient} = require("@tonclient/core");
+const {libNode} = require("@tonclient/lib-node");
 const fs = require('fs');
 const hex = require('ascii-hex');
-const contract = require('./ClientContract.js'); //specify the path to the .js file
-const contractPackage = contract.package;
-const abi = contract.package.abi;
-const pathJson = './ClientContract.json';
-const storageAddress = '0:2531180b651c432320b9adee3aac694199b1d8042751a208217688a281f4ce5c';
-const role1Name = 'writerApples';
-const role2Name = 'writerOranges';
-const role1Member = '0:8fe67826822b094ede1e74ded405bdff42b417937789cb9dec9cc8e5c7d7b7ec';
-const role2Member = '0:a9298015aa55372d7f6def476e699ef548d30ec4439467ab8eeef9e776a39330';
+
+const paramClient = process.argv[2]||'0_1';
+const currentClient = 'client' + paramClient;
+// const pathJsonClient = './' + currentClient + '/' + currentClient + 'Contract.json';
+
+const contract = require('./client0_0/client0_0.Contract.js'); //specify the path to the .js file
+const pathJson = './client0_0/client0_0Contract.json'; //'./ClientContract.json';
+const role1Name = 'writerGeometrids'; //'writerApples';
+// const role2Name = 'writerOranges';
+const storagePath = './client999999/client999999Contract.json';   //'./TestStorageContract.json';
+const role1MemberPath = './' + currentClient + '/' + currentClient + 'Contract.json';  //'./Client1Contract.json';
+// const role2MemberPath = './Client2Contract.json';
+
+let gasFeeALL = 0;
 
 function toHex(input) {
   let output = '';
@@ -17,99 +23,117 @@ function toHex(input) {
   return String(output);
 }
 
+function getAddressFromJson(pathTo) {
+  let buffer = fs.readFileSync(pathTo,{encoding: "utf8"});
+  let data = JSON.parse(buffer);
+  return data.address;
+}
+
+function getKeysFromJson(pathTo) {
+  let buffer = fs.readFileSync(pathTo,{encoding: "utf8"});
+  let data = JSON.parse(buffer);
+  return data.keys;
+}
+
 async function main(client) {
   // Read contract data
   try{
-    const contractJson = fs.readFileSync(pathJson,{encoding: "utf8"});
-    const contractData = JSON.parse(contractJson);
-    const contractAddress = contractData.address;
-    const contractKeys = contractData.keys;
+    const contractAddress = getAddressFromJson(pathJson);
+    console.log('superuser address: ',contractAddress);
+    const contractKeys = getKeysFromJson(pathJson);
+    // console.log(contractKeys);
+    const storageAddress = getAddressFromJson(storagePath);
+    console.log('test storage address: ', storageAddress);
+    const role1Member = getAddressFromJson(role1MemberPath);
+    console.log('member address for role1: ', role1Member);
+    // const role2Member = getAddressFromJson(role2MemberPath);
+    // console.log('member address for role2: ', role2Member);
 
-    const runMessage = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'addRole',
-      input: {
-        storageAddress: storageAddress,
-        roleNameHex:  toHex(role1Name),
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState = await client.contracts.sendMessage(runMessage.message);
-    const result = await client.contracts.waitForRunTransaction(runMessage, messageProcessingState);
-    console.log('Response from the contract:', result.output);
+    const paramsAddWriterApples = {
+      send_events: false,
+      message_encode_params: {
+        address: contractAddress,
+        abi: {
+          type: 'Contract',
+          value: contract.package.abi
+        },
+        call_set: {
+          function_name: 'addRole',
+          input: {
+            storageAddress: storageAddress,
+            roleNameHex:  toHex(role1Name),
+          }
+        },
+        signer: {
+          type: 'Keys',
+          keys: contractKeys }
+        }
+    };
 
-    const runMessage0 = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'addRole',
-      input: {
-        storageAddress: storageAddress,
-        roleNameHex: toHex(role2Name),
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState0 = await client.contracts.sendMessage(runMessage0.message);
-    const result0 = await client.contracts.waitForRunTransaction(runMessage0, messageProcessingState0);
-    console.log('Response from the contract:', result0.output);
+    let responseAddWriterApples = await client.processing.process_message(paramsAddWriterApples);
+    console.log('addRole tx id: ', responseAddWriterApples.transaction.id);
+    
+    const gasFeeaddRole = parseInt(responseAddWriterApples.transaction.total_fees, 16);
+    gasFeeALL += gasFeeaddRole;
+    console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee [addRole]: " + gasFeeaddRole/1000000000);
 
-    const runMessage1 = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'addRoleMember',
-      input: {
-        storageAddress: storageAddress,
-        roleId: '0x0',
-        member: role1Member,
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState1 = await client.contracts.sendMessage(runMessage1.message);
-    const result1 = await client.contracts.waitForRunTransaction(runMessage1, messageProcessingState1);
-    console.log('Response from the contract:', result1.output);
+    const paramsAMTWA = {
+      send_events: false,
+      message_encode_params: {
+        address: contractAddress,
+        abi: {
+          type: 'Contract',
+          value: contract.package.abi
+        },
+        call_set: {
+          function_name: 'addRoleMember',
+          input: {
+            storageAddress: storageAddress,
+            roleId: '0x0',
+            member: role1Member,
+          }
+        },
+        signer: {
+          type: 'Keys',
+          keys: contractKeys }
+        }
+    };
 
-    const runMessage2 = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'addRoleMember',
-      input: {
-        storageAddress: storageAddress,
-        roleId: '0x1',
-        member: role2Member,
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState2 = await client.contracts.sendMessage(runMessage2.message);
-    const result2 = await client.contracts.waitForRunTransaction(runMessage2, messageProcessingState2);
-    console.log('Response from the contract:', result2.output);
+    let responseAMTWA = await client.processing.process_message(paramsAMTWA);
+    console.log('addRoleMember tx id: ', responseAMTWA.transaction.id);
 
-    const runMessage3 = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'setRole1',
-      input: {
-        storageAddress: storageAddress,
-        roleId: '0x0',
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState3 = await client.contracts.sendMessage(runMessage3.message);
-    const result3 = await client.contracts.waitForRunTransaction(runMessage3, messageProcessingState3);
-    console.log('Response from the contract:', result3.output);
+    const gasFeeaddRoleMember = parseInt(responseAMTWA.transaction.total_fees, 16);
+    gasFeeALL += gasFeeaddRoleMember;
+    console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee [addRoleMember]: " + gasFeeaddRoleMember/1000000000);
 
-    const runMessage4 = await client.contracts.createRunMessage({
-      address: contractAddress,
-      abi: abi,
-      functionName: 'setRole2',
-      input: {
-        storageAddress: storageAddress,
-        roleId: '0x1',
-      },
-      keyPair: contractKeys,
-    })
-    const messageProcessingState4 = await client.contracts.sendMessage(runMessage4.message);
-    const result4 = await client.contracts.waitForRunTransaction(runMessage4, messageProcessingState4);
-    console.log('Response from the contract:', result4.output);
+    const paramsSRWA = {
+      send_events: false,
+      message_encode_params: {
+        address: contractAddress,
+        abi: {
+          type: 'Contract',
+          value: contract.package.abi
+        },
+        call_set: {
+          function_name: 'setRole1',
+          input: {
+            storageAddress: storageAddress,
+            roleId: '0x0',
+          }
+        },
+        signer: {
+          type: 'Keys',
+          keys: contractKeys }
+        }
+    };
+
+    let responseSRWA = await client.processing.process_message(paramsSRWA);
+    console.log('setRole1 tx id: ', responseSRWA.transaction.id);
+
+    const gasFeesetRole1 = parseInt(responseSRWA.transaction.total_fees, 16);
+    gasFeeALL += gasFeesetRole1;
+    console.log('gasFeeALL: ' + gasFeeALL/1000000000 + "; gasFee [addRoleMember]: " + gasFeesetRole1/1000000000);
+
   }catch(err){
     console.log(err);
   }
@@ -117,11 +141,14 @@ async function main(client) {
 
 (async () => {
   try {
-    const client = await TONClient.create({
-      servers: ['gql.custler.net'],
+    TonClient.useBinaryLibrary(libNode);
+    const client = new TonClient({
+      network: {
+        server_address: 'net.ton.dev'
+      }
     });
+    console.log("Hello net.ton.dev!");
     await main(client);
-    console.log('TON done main');
     process.exit(0);
   } catch (error) {
     console.error(error);
