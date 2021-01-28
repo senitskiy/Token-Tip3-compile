@@ -8,3 +8,4 @@ client*/
 -save
 tokens/RootToken*
 send.log
+tonos-cli.conf.json
