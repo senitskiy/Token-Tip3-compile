@@ -11,5 +11,11 @@ Config & Run
 
 Deploying token root to the Blockchain
 
-$ node deployingTokenRoot.js [TokenName] [TokenSymbol]
+$ node deployingTokenRoot.js [nameRootToken] [symbolRootToken] [decimals] [total_supply] [root_owner]
+
+nameRootToken   = default [number];
+symbolRootToken = default [number +'symbol'];
+decimals        = default [0];
+total_supply    = default [1000];
+root_owner      = default [0];
 

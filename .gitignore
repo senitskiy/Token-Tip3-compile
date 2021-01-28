@@ -9,3 +9,4 @@ client*/
 tokens/RootToken*
 send.log
 tonos-cli.conf.json
+.log
