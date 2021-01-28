@@ -6,4 +6,4 @@ node_modules
 workspace.code-workspace
 client*/
 -save
-tokens*/
+tokens/RootToken*

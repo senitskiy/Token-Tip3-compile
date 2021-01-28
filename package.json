@@ -10,6 +10,7 @@
     "@tonclient/lib-node": "^1.5.2",
     "ascii-hex": "^1.0.1",
     "dotenv": "^8.2.0",
+    "fs": "0.0.1-security",
     "node-inspect": "^2.0.0",
     "sudo-js": "^1.0.2",
     "ton-client-node-js": "^0.28.0"
