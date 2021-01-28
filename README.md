@@ -11,5 +11,5 @@ Config & Run
 
 Deploying token root to the Blockchain
 
-$ node deployingTokenRoot.js [TokenName]
+$ node deployingTokenRoot.js [TokenName] [TokenSymbol]
 
