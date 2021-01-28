@@ -30,10 +30,10 @@ function toHex(input) {
 
 let gasFeeALL = 0;
 
- 
-function deployingTokenRootMain() {
+(() => {
 
-
+  exec(`./tonos-cli config --retries 30`);
+  exec(`./tonos-cli config --timeout 150000`);
   exec(`mkdir ./tokens/RootToken${nameRootToken}`,  ()=> {
     exec(`./tonos-cli genphrase > ./tokens/RootToken${nameRootToken}/seedphrase`, 
       function(error, stdout, stderr){                
@@ -134,7 +134,7 @@ function deployingTokenRootMain() {
                                 })
                             })
                           }
-                         , 500);
+                         , 10);
                       
                         })
                       // });  
@@ -148,6 +148,4 @@ function deployingTokenRootMain() {
     });
   }); 
 
-} 
-
-deployingTokenRootMain ();
+}) ();
