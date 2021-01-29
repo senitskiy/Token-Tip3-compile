@@ -57,7 +57,7 @@ function maidDeployWallet  (i)  {
               if(error) throw error;
               
               const seedphrase =  fileContent.slice(fileContent.indexOf("\""), fileContent.length-1);
-              console.log(`Wallet ${i}:${seedphrase}`);
+              console.log(`Seedphrase for Wallet${i}:${seedphrase}`);
               
               exec(`./tonos-cli getkeypair ./${directoryRoot}/${i}/deploy.keys.json ${seedphrase} | tee ./.log`,
                 () => {          
@@ -69,7 +69,7 @@ function maidDeployWallet  (i)  {
                 contractKeysPublic = contractData.public;
                 contractKeysSecret = contractData.secret;
 
-                console.log(`Key public ${i}: ${contractKeysPublic}`);
+                console.log(`Key public for Wallet${i}: ${contractKeysPublic}`);
 
                 const rootContractJson = fs.readFileSync(`./${directoryRoot}/address.json`,{encoding: "utf8"});
                 const rootContractData = JSON.parse(rootContractJson);
@@ -100,7 +100,7 @@ function maidDeployWallet  (i)  {
                       
                       const startAddr = addr.indexOf("value0")+10;
                       rawAddress = addr.slice(startAddr, startAddr+66);
-                      console.log(`Raw Address: ${rawAddress}`);  //"{" + strAddress + "}"
+                      console.log(`Raw Address Wallet${i}: ${rawAddress}`);  //"{" + strAddress + "}"
                       
                       fs.appendFile(`./${directoryRoot}/${i}/address.json`, "{ \"address\": " + "\"" + rawAddress + "\"}" , 
                         function(error){
@@ -112,18 +112,29 @@ function maidDeployWallet  (i)  {
                                   return;
                               }
                               if (stderr) {
-                                  console.log(`Ошибка транзакции, на адрес. ${rawAddress}`);
-                                  
+                                  console.log(`Ошибка транзакции, на адрес. ${rawAddress}`);  
+                                  resolve(stderr);                                
                               }
-                              else console.log(`TON send to: ${rawAddress} \n`);
+                              else console.log(`TON send to Wallet${i}: ${rawAddress}`);
                             
-                            const rootAddress = require(`./${directoryRoot}/address.json`); //specify the path to the .js file
+                            // const rootAddress = require(`./${directoryRoot}/address.json`); //specify the path to the .js file
 
                             
-                            resolve(i);
+
                             
-                            exec(`./tonos-cli call ${directoryRoot} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"0x440aa3053784bc823005fe27a92edffc90f3ba23c52e4a6da1f01314363aec52", "internal_owner":"0", "tokens":"1","grams":"1000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi`,
-                            )
+                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"0x${contractKeysPublic}", "internal_owner":"0", "tokens":"1","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
+                              (error, stdout, stderr) => {
+                                if (error) {
+                                    console.log(`error: ${error.message}`);
+                                    return;
+                                }
+                                if (stderr) {
+                                    console.log(`Ошибка при deploy. Адрес: ${rawAddress}`);
+                                    return
+                                }
+                                else console.log(`Deploy to Wallet${i}: ${rawAddress} \n`);// console.log(`stdout: ${stdout}`);                                
+                              resolve(i);
+                            })
 
     //                         const contractJson = fs.readFileSync(`./tokens/RootToken${nameRootToken}/deploy.keys.json`,{encoding: "utf8"});
     //                         const contractData = JSON.parse(contractJson);
@@ -223,7 +234,7 @@ function maidDeployWallet1  (i)  {
 
   fs.stat(directoryRoot, function (err) {
     if (!err) {
-      console.log(`directory exists ${directoryRoot}`);
+      // console.log(`directory exists ${directoryRoot}`);
     }
     else if (err.code === 'ENOENT') {
       console.log(`directory ${directoryRoot} does not exist`);
@@ -232,8 +243,8 @@ function maidDeployWallet1  (i)  {
   });
 
 
-  exec(`./tonos-cli config --retries 40`);
-  exec(`./tonos-cli config --timeout 200000`);
+  exec(`./tonos-cli config --retries 45`);
+  exec(`./tonos-cli config --timeout 210000`);
 
   try{
     for (const item of arrNumContract) {
