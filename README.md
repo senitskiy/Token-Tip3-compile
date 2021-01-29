@@ -22,6 +22,7 @@ root_owner      = default [0];
 example: node deployingTokenRoot.js Test tst
 
 $ node deployingWalletToRoot.js [directoryRoot] [numberWallet]
+
 directoryRoot   = example: tokens/RootTokenTest
 numberWallet    = default [4]
 
