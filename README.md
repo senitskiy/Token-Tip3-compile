@@ -19,7 +19,7 @@ $ node deployingTokenRoot.js [nameRootToken] [symbolRootToken] [decimals] [total
 * total_supply    = default [1000];
 * root_owner      = default [0];
 
-example: node deployingTokenRoot.js Test tst
+_example: node deployingTokenRoot.js Test tst_
 
 ### Token Root management and deploy wallet
 
@@ -28,5 +28,5 @@ $ node deployingWalletToRoot.js [directoryRoot] [numberWallet]
 * directoryRoot   = example: tokens/RootTokenTest
 * numberWallet    = default [4]
 
-example run: node deployingWalletToRoot.js tokens/RootTokenTest
+_example run: node deployingWalletToRoot.js tokens/RootTokenTest_
 
