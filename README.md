@@ -32,6 +32,9 @@ $ node deployingWalletToRoot.js [directoryRoot] [numberWallet]
 
 _example run: node deployingWalletToRoot.js tokens/RootTokenTest_
 
+_example run: node deployingWalletToRoot.js tokens/RootTokenTest 5_ 
+
 _example run internal Owner: node deployingWalletToRoot.js tokens/RootTokenTest 1 0x97c7e2b5fcce2add735074f472f497e2e604c64b67be10a4f430cb9fa685c58e_
+
 *run and see .log for current status*
 
