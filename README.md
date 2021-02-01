@@ -20,6 +20,7 @@ $ node deployingTokenRoot.js [nameRootToken] [symbolRootToken] [decimals] [total
 * root_owner      = default [0];
 
 _example: node deployingTokenRoot.js Test tst_
+
 *run and see .log for current status*
 
 ### Token Root management and deploy wallet
