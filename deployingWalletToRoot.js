@@ -6,10 +6,12 @@ const hex = require('ascii-hex');
 
 let directoryRoot       = process.argv[2];
 let numberWallet        = process.argv[3]||4;
+let internalOwner       = process.argv[4]||0;
 
 const arrNumContract = new Array(numberWallet);
 
-for (let i = 0; i < numberWallet; i++) {arrNumContract[i] = i};
+let numDirectory = 0;
+// for (let i = 0; i < numberWallet; i++) {arrNumContract[i] = i};
 
 // let decimals        = process.argv[4]||0;
 // let total_supply    = process.argv[5]||1000;
@@ -118,11 +120,13 @@ function maidDeployWallet  (i)  {
                               else console.log(`TON send to Wallet${i}: ${rawAddress}`);
                             
                             // const rootAddress = require(`./${directoryRoot}/address.json`); //specify the path to the .js file
-
                             
+                              if (internalOwner != 0) 
+                                contractKeysPublic = 0
+                              else   
+                                contractKeysPublic = '0x' + contractKeysPublic;
 
-                            
-                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"0x${contractKeysPublic}", "internal_owner":"0", "tokens":"1","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
+                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"${contractKeysPublic}", "internal_owner":"${internalOwner}", "tokens":"1","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
                               (error, stdout, stderr) => {
                                 if (error) {
                                     console.log(`error: ${error.message}`);
@@ -228,31 +232,102 @@ function maidDeployWallet1  (i)  {
 }
 
 
+async function countDirectory () {
+  return new Promise((resolve, reject) => {
+    fs.readdir(directoryRoot, function(err, items) {
+      // console.log(items);
+
+      for (let i=0; i<items.length; i++) {
+          // console.log(items[i]);
+      
+        // const elem = directoryRoot + items[i];
+
+        fs.stat(directoryRoot + items[i], function(err, stats) {
+
+          if (stats.isDirectory()) { 
+            numberWallet++; 
+            numDirectory++
+          
+
+          } 
+          if ((!err) && (i==items.length - 1)) {
+            resolve(numberWallet);
+            // console.log(`directory err ${err}`);
+          }              
+                
+        })
+
+        
+
+      }
+    })
+  })
+}
+
+
+
+function existDirectory  () {
+  return new Promise((resolve, reject) => {
+    fs.stat(directoryRoot, function (err) {
+    
+      if (err) {
+        console.log(`directory ${directoryRoot} does not exist`);
+        return;
+      }
+
+      if (!err) {
+        exec(`./tonos-cli config --retries 45`);
+        exec(`./tonos-cli config --timeout 210000`);
+        resolve();
+      }
+    }) 
+  })
+}    
+
+
+function numDir  () {
+  return new Promise((resolve, reject) => {
+ 
+    for (let i = 0; i < numberWallet; i++) {
+      arrNumContract[i] = i
+      if (i = numberWallet) resolve();
+    };
+             
+  }) 
+}   
+
 (async function () {
 
   if (!directoryRoot) { console.log('Не задана директория.'); return; }
 
-  fs.stat(directoryRoot, function (err) {
-    if (!err) {
-      // console.log(`directory exists ${directoryRoot}`);
-    }
-    else if (err.code === 'ENOENT') {
-      console.log(`directory ${directoryRoot} does not exist`);
-      return;
-    }
-  });
+        try{
 
+          const existDir = await existDirectory();
 
-  exec(`./tonos-cli config --retries 45`);
-  exec(`./tonos-cli config --timeout 210000`);
+          const resDir = await countDirectory()
+            .then((numberWallet) => {
+              for (let i = 0; i < numberWallet + 1; i++) {
+                arrNumContract[i] = i
+              }
+            })
+            // .then(() => {
 
-  try{
-    for (const item of arrNumContract) {
-      const res = await maidDeployWallet(item);
-    }
-  }
-  catch (error) {
-    console.error(error);
-  }     
+          // const resNumDir = await numDir();
+
+              for (let item of arrNumContract) {
+                if (numDirectory>=0) {numDirectory--; continue}
+          
+                if (internalOwner != 0) item += '_internalOwner:_' + internalOwner;
+
+                  const res = await maidDeployWallet(item);
+              }
+            // });
+
+          }    
+        catch (error) {
+          console.error(error);
+        }   
+      
+  
 }) ();
         
