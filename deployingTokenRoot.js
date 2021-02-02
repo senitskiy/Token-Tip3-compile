@@ -37,19 +37,25 @@ let gasFeeALL = 0;
 
 (() => {
 
-  exec(`./tonos-cli config --retries 40`);
-  exec(`./tonos-cli config --timeout 200000`);
+  exec(`./tonos-cli config --retries 45`);
+  exec(`./tonos-cli config --timeout 210000`);
   exec(`mkdir ./tokens/RootToken${nameRootToken} | tee ./.log`,  ()=> {
     exec(`./tonos-cli genphrase > ./tokens/RootToken${nameRootToken}/seedphrase | tee ./.log`, 
       function(error, stdout, stderr){                
         if(error) throw error; 
 
         fs.readFile(`./tokens/RootToken${nameRootToken}/seedphrase`,   "utf8",
-          function(error, fileContent){
+          (error, fileContent) => {
             if(error) throw error;
             
             const seedphrase =  fileContent.slice(fileContent.indexOf("\""), fileContent.length-1);
             console.log(seedphrase);
+            fs.appendFile(`./tokens/RootToken${nameRootToken}/seedphrase.json`, "{ \"seedphrase\": " + seedphrase  + "}",
+              (error) => {
+                if (error)
+                  throw error;
+              });
+
             exec(`./tonos-cli getkeypair ./tokens/RootToken${nameRootToken}/deploy.keys.json ${seedphrase} | tee ./.log`,
               () => {          
               exec(`./tonos-cli genaddr RootTokenContract.tvc RootTokenContract.abi --setkey ./tokens/RootToken${nameRootToken}/deploy.keys.json --wc 0 > ./tokens/RootToken${nameRootToken}/addr | tee ./.log`,
@@ -75,7 +81,7 @@ let gasFeeALL = 0;
                     fs.appendFile(`./tokens/RootToken${nameRootToken}/address.json`, "{ \"address\": " + "\"" + rawAddress + "\"}" , 
                       function(error){
                         if(error) throw error;              
-                        exec(`./tonos-cli call ${giverGiverAdress} sendTransaction '{"dest":"${rawAddress}", "value":1000000000, "bounce":false}' --abi ./giver.abi.json --sign ./giver.key.json | tee ./.log`,
+                        exec(`./tonos-cli call ${giverGiverAdress} sendTransaction '{"dest":"${rawAddress}", "value":10000000000, "bounce":false}' --abi ./giver.abi.json --sign ./giver.key.json | tee ./.log`,
                           (error, stdout, stderr) => {
                             if (error) {
                                 console.log(`error: ${error.message}`);

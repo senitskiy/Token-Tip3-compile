@@ -25,7 +25,7 @@ _example: node deployingTokenRoot.js Test tst_
 
 ### Token Root management and deploy wallet
 
-$ node deployingWalletToRoot.js [directoryRoot] [numberWallet]
+$ node deployingWalletToRoot.js [directoryRoot] [numberWallet] [internalOwner]
 
 * directoryRoot   = example: tokens/RootTokenTest
 * numberWallet    = default [4]

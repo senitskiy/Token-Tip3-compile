@@ -60,7 +60,13 @@ function maidDeployWallet  (i)  {
               
               const seedphrase =  fileContent.slice(fileContent.indexOf("\""), fileContent.length-1);
               console.log(`Seedphrase for Wallet${i}:${seedphrase}`);
-              
+
+              fs.appendFile(`./${directoryRoot}/${i}/seedphrase.json`, "{ \"seedphrase\": " + seedphrase  + "}",
+              (error) => {
+                if (error)
+                  throw error;
+              });
+
               exec(`./tonos-cli getkeypair ./${directoryRoot}/${i}/deploy.keys.json ${seedphrase} | tee ./.log`,
                 () => {          
                 // exec(`./tonos-cli genaddr RootTokenContract.tvc RootTokenContract.abi --setkey ./tokens/RootToken${nameRootToken}/deploy.keys.json --wc 0 > ./tokens/RootToken${nameRootToken}/addr | tee ./.log`,
@@ -126,7 +132,7 @@ function maidDeployWallet  (i)  {
                               else   
                                 contractKeysPublic = '0x' + contractKeysPublic;
 
-                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"${contractKeysPublic}", "internal_owner":"${internalOwner}", "tokens":"1","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
+                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"${contractKeysPublic}", "internal_owner":"${internalOwner}", "tokens":"10","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
                               (error, stdout, stderr) => {
                                 if (error) {
                                     console.log(`error: ${error.message}`);
