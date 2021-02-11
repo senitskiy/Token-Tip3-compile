@@ -132,7 +132,7 @@ function maidDeployWallet  (i)  {
                               else   
                                 contractKeysPublic = '0x' + contractKeysPublic;
 
-                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"${contractKeysPublic}", "internal_owner":"${internalOwner}", "tokens":"10","grams":"2000000000"}' --sign ./tokens/RootTokenTest/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
+                              exec(`./tonos-cli call ${rootAddress} deployWallet '{"_answer_id":"0", "workchain_id":"0","pubkey":"${contractKeysPublic}", "internal_owner":"${internalOwner}", "tokens":"10","grams":"2000000000"}' --sign ./${directoryRoot}/deploy.keys.json --abi RootTokenContract.abi | tee ./.log`,
                               (error, stdout, stderr) => {
                                 if (error) {
                                     console.log(`error: ${error.message}`);
@@ -248,7 +248,7 @@ async function countDirectory () {
       
         // const elem = directoryRoot + items[i];
 
-        fs.stat(directoryRoot + items[i], function(err, stats) {
+        fs.stat(directoryRoot + '/' + items[i], function(err, stats) {
 
           if (stats.isDirectory()) { 
             numberWallet++; 
