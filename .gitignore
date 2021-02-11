@@ -6,7 +6,7 @@ node_modules
 workspace.code-workspace
 client*/
 -save
-
 send.log
 tonos-cli.conf.json
 .log
+tokens/RootToken*
